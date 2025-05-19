@@ -43,7 +43,6 @@ Partie 1:
     - contact_name(suppliers)
     - city(suppliers)
     - address(suppliers)
-    - city(suppliers)
     - region(suppliers)
     - postal_code(suppliers)
     - country(suppliers)
@@ -64,4 +63,285 @@ Partie 1:
     - postal_code(customers)
     - country(customers)
     - phone(customers)
+
+Partie 2:
+2.1 Déterminer quelles tables doivent être dénormalisées
+- Identifier les données à embarquer dans les documents (par exemple : catégories dans produits)
+  - produits: categories, suppliers
+  - commandes: shippers, customers
+
+2.2 Concevoir la structure des documents
+- Produits: inclure les informations des catégories et fournisseurs
+  ```json
+  {
+    "product":"",
+    "category":"",
+    "supplier":{
+        "name":"",
+        "contact":"",
+        "city":"",
+        "address":"",
+        "region":"",
+        "postal_code":"",
+        "country":"",
+        "phone":""
+    }
+  }
+  ```
+- Commandes: inclure les informations clients et les détails des produits commandés
+  ```json
+  {
+    "shipper":"",
+    "shipper_phone":"",
+    "ship":{
+        "name":"",
+        "address":"",
+        "city":"",
+        "region":"",
+        "postal_code":"",
+        "country":"",
+    },
+    "customer":{
+        "name":"",
+        "contact":"",
+        "city":"",
+        "region":"",
+        "postal_code":"",
+        "country":"",
+        "phone":""
+    }
+  }
+  ```
+2.3 Définir les types de données pour chaque champ
+- Identifiez les types appropriés (text, keyword, date, numeric, etc.)
+  - produit: 
+    ```json
+    {
+      "product":"text",
+      "category":"text",
+      "supplier":{
+        "name":"text",
+        "contact":"text",
+        "city":"text",
+        "address":"text",
+        "region":"text",
+        "postal_code":"keyword",
+        "country":"text",
+        "phone":"text"
+      }
+    }
+    ```
+
+  - commandes: 
+    ```json
+    {
+        "shipper":"text",
+        "shipper_phone":"text",
+        "ship":{
+            "name":"text",
+            "address":"text",
+            "city":"text",
+            "region":"text",
+            "postal_code":"keyword",
+            "country":"text"
+        },
+        "customer":{
+            "name":"text",
+            "contact":"text",
+            "city":"text",
+            "region":"text",
+            "postal_code":"keyword",
+            "country":"text",
+            "phone":"text"
+        }
+    }
+    ```
+- Décidez quels champs doivent être analysés pour la recherche full-text
+  - Produits: product, category, supplier.name, supplier.contact
+  - Commandes: shipper, ship.name, customer.name, customer.contact 
   
+2.4 Configurer les analyseurs appropriés
+- Définir un analyseur personnalisé pour les noms des produits
+```json
+    "analysis": {
+        "filter": {
+            "my_stop": {
+                "type": "stop",
+                "stopwords": ["a", "an", "the", "and", "or"]
+            },
+            "french_stemmer": {
+                "type": "stemmer",
+                "language": "light_french"
+            }
+        },
+        "analyzer": {
+            "custom_product_analyzer": {
+                "type": "custom",
+                "tokenizer": "standard",
+                "filter": [
+                    "lowercase",
+                    "my_stop",
+                    "french_stemmer"
+                ]
+            }
+        }
+    }
+```
+- Configurer les options d'analyse appropriées pour les champs textuels
+```json
+    "analysis": {
+        "filter": {
+            "my_stop": {
+                "type": "stop",
+                "stopwords": ["a", "an", "the", "and", "or"]
+            },
+            "french_stemmer": {
+                "type": "stemmer",
+                "language": "light_french"
+            }
+        },
+        "analyzer": {
+            "custom_product_analyzer": {
+                "type": "custom",
+                "tokenizer": "standard",
+                "filter": [
+                    "lowercase",
+                    "my_stop",
+                    "french_stemmer"
+                ]
+            },
+            "standard_analyzer": {
+                "type": "standard"
+            }
+        }
+    }
+```
+2.5 Créer le mapping dans Elasticsearch
+- Pour l'index "products"
+```json
+{
+    "mappings": {
+        "properties": {
+            "product": {
+                "type": "text",
+                "analyzer": "custom_product_analyzer"
+            },
+            "category": {
+                "type": "text",
+                "analyzer": "standard_analyzer"
+            },
+            "supplier": {
+                "properties": {
+                    "name": {
+                        "type": "text",
+                        "analyzer": "standard_analyzer"
+                    },
+                    "contact": {
+                        "type": "text",
+                        "analyzer": "standard_analyzer"
+                    },
+                    "city": {
+                        "type": "text",
+                        "analyzer": "standard_analyzer"
+                    },
+                    "address": {
+                        "type": "text",
+                        "analyzer": "standard_analyzer"
+                    },
+                    "region": {
+                        "type": "text",
+                        "analyzer": "standard_analyzer"
+                    },
+                    "postal_code": {
+                        "type": "keyword"
+                    },
+                    "country": {
+                        "type": "text",
+                        "analyzer": "standard_analyzer"
+                    },
+                    "phone": {
+                        "type": "text",
+                        "analyzer": "standard_analyzer"
+                    }
+                }
+            }
+        }
+    }
+}
+```
+- Pour l'index "orders"
+```json
+{
+    "mappings": {
+        "properties": {
+            "shipper": {
+                "type": "text",
+                "analyzer": "standard_analyzer"
+            },
+            "shipper_phone": {
+                "type": "text",
+                "analyzer": "standard_analyzer"
+            },
+            "ship": {
+                "properties": {
+                    "name": {
+                        "type": "text",
+                        "analyzer": "standard_analyzer"
+                    },
+                    "address": {
+                        "type": "text",
+                        "analyzer": "standard_analyzer"
+                    },
+                    "city": {
+                        "type": "text",
+                        "analyzer": "standard_analyzer"
+                    },
+                    "region": {
+                        "type": "text",
+                        "analyzer": "standard_analyzer"
+                    },
+                    "postal_code": {
+                        "type": "keyword"
+                    },
+                    "country": {
+                        "type": "text",
+                        "analyzer": "standard_analyzer"
+                    }
+                }
+            },
+            "customer": {
+                "properties": {
+                    "name": {
+                        "type": "text",
+                        "analyzer": "standard_analyzer"
+                    },
+                    "contact": {
+                        "type": "text",
+                        "analyzer": "standard_analyzer"
+                    },
+                    "city": {
+                        "type": "text",
+                        "analyzer": "standard_analyzer"
+                    },
+                    "region": {
+                        "type": "text",
+                        "analyzer": "standard_analyzer"
+                    },
+                    "postal_code": {
+                        "type": "keyword"
+                    },
+                    "country": {
+                        "type": "text",
+                        "analyzer": "standard_analyzer"
+                    },
+                    "phone": {
+                        "type": "text",
+                        "analyzer": "standard_analyzer"
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
