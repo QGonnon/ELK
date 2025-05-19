@@ -112,6 +112,7 @@ Partie 2:
     }
   }
   ```
+
 2.3 Définir les types de données pour chaque champ
 - Identifiez les types appropriés (text, keyword, date, numeric, etc.)
   - produit: 
@@ -162,186 +163,203 @@ Partie 2:
   
 2.4 Configurer les analyseurs appropriés
 - Définir un analyseur personnalisé pour les noms des produits
-```json
-    "analysis": {
-        "filter": {
-            "my_stop": {
-                "type": "stop",
-                "stopwords": ["a", "an", "the", "and", "or"]
+    ```json
+        "analysis": {
+            "filter": {
+                "my_stop": {
+                    "type": "stop",
+                    "stopwords": ["a", "an", "the", "and", "or"]
+                },
+                "french_stemmer": {
+                    "type": "stemmer",
+                    "language": "light_french"
+                }
             },
-            "french_stemmer": {
-                "type": "stemmer",
-                "language": "light_french"
-            }
-        },
-        "analyzer": {
-            "custom_product_analyzer": {
-                "type": "custom",
-                "tokenizer": "standard",
-                "filter": [
-                    "lowercase",
-                    "my_stop",
-                    "french_stemmer"
-                ]
+            "analyzer": {
+                "custom_product_analyzer": {
+                    "type": "custom",
+                    "tokenizer": "standard",
+                    "filter": [
+                        "lowercase",
+                        "my_stop",
+                        "french_stemmer"
+                    ]
+                }
             }
         }
-    }
-```
+    ```
 - Configurer les options d'analyse appropriées pour les champs textuels
-```json
-    "analysis": {
-        "filter": {
-            "my_stop": {
-                "type": "stop",
-                "stopwords": ["a", "an", "the", "and", "or"]
+    ```json
+        "analysis": {
+            "filter": {
+                "my_stop": {
+                    "type": "stop",
+                    "stopwords": ["a", "an", "the", "and", "or"]
+                },
+                "french_stemmer": {
+                    "type": "stemmer",
+                    "language": "light_french"
+                }
             },
-            "french_stemmer": {
-                "type": "stemmer",
-                "language": "light_french"
-            }
-        },
-        "analyzer": {
-            "custom_product_analyzer": {
-                "type": "custom",
-                "tokenizer": "standard",
-                "filter": [
-                    "lowercase",
-                    "my_stop",
-                    "french_stemmer"
-                ]
-            },
-            "standard_analyzer": {
-                "type": "standard"
+            "analyzer": {
+                "custom_product_analyzer": {
+                    "type": "custom",
+                    "tokenizer": "standard",
+                    "filter": [
+                        "lowercase",
+                        "my_stop",
+                        "french_stemmer"
+                    ]
+                },
+                "standard_analyzer": {
+                    "type": "standard"
+                }
             }
         }
-    }
-```
+    ```
+
 2.5 Créer le mapping dans Elasticsearch
 - Pour l'index "products"
-```json
-{
-    "mappings": {
-        "properties": {
-            "product": {
-                "type": "text",
-                "analyzer": "custom_product_analyzer"
-            },
-            "category": {
-                "type": "text",
-                "analyzer": "standard_analyzer"
-            },
-            "supplier": {
-                "properties": {
-                    "name": {
-                        "type": "text",
-                        "analyzer": "standard_analyzer"
-                    },
-                    "contact": {
-                        "type": "text",
-                        "analyzer": "standard_analyzer"
-                    },
-                    "city": {
-                        "type": "text",
-                        "analyzer": "standard_analyzer"
-                    },
-                    "address": {
-                        "type": "text",
-                        "analyzer": "standard_analyzer"
-                    },
-                    "region": {
-                        "type": "text",
-                        "analyzer": "standard_analyzer"
-                    },
-                    "postal_code": {
-                        "type": "keyword"
-                    },
-                    "country": {
-                        "type": "text",
-                        "analyzer": "standard_analyzer"
-                    },
-                    "phone": {
-                        "type": "text",
-                        "analyzer": "standard_analyzer"
+    ```json
+    {
+        "mappings": {
+            "properties": {
+                "product": {
+                    "type": "text",
+                    "analyzer": "custom_product_analyzer"
+                },
+                "category": {
+                    "type": "text",
+                    "analyzer": "standard_analyzer"
+                },
+                "supplier": {
+                    "properties": {
+                        "name": {
+                            "type": "text",
+                            "analyzer": "standard_analyzer"
+                        },
+                        "contact": {
+                            "type": "text",
+                            "analyzer": "standard_analyzer"
+                        },
+                        "city": {
+                            "type": "text",
+                            "analyzer": "standard_analyzer"
+                        },
+                        "address": {
+                            "type": "text",
+                            "analyzer": "standard_analyzer"
+                        },
+                        "region": {
+                            "type": "text",
+                            "analyzer": "standard_analyzer"
+                        },
+                        "postal_code": {
+                            "type": "keyword"
+                        },
+                        "country": {
+                            "type": "text",
+                            "analyzer": "standard_analyzer"
+                        },
+                        "phone": {
+                            "type": "text",
+                            "analyzer": "standard_analyzer"
+                        }
                     }
                 }
             }
         }
     }
-}
-```
+    ```
 - Pour l'index "orders"
-```json
-{
-    "mappings": {
-        "properties": {
-            "shipper": {
-                "type": "text",
-                "analyzer": "standard_analyzer"
-            },
-            "shipper_phone": {
-                "type": "text",
-                "analyzer": "standard_analyzer"
-            },
-            "ship": {
-                "properties": {
-                    "name": {
-                        "type": "text",
-                        "analyzer": "standard_analyzer"
-                    },
-                    "address": {
-                        "type": "text",
-                        "analyzer": "standard_analyzer"
-                    },
-                    "city": {
-                        "type": "text",
-                        "analyzer": "standard_analyzer"
-                    },
-                    "region": {
-                        "type": "text",
-                        "analyzer": "standard_analyzer"
-                    },
-                    "postal_code": {
-                        "type": "keyword"
-                    },
-                    "country": {
-                        "type": "text",
-                        "analyzer": "standard_analyzer"
+    ```json
+    {
+        "mappings": {
+            "properties": {
+                "shipper": {
+                    "type": "text",
+                    "analyzer": "standard_analyzer"
+                },
+                "shipper_phone": {
+                    "type": "text",
+                    "analyzer": "standard_analyzer"
+                },
+                "ship": {
+                    "properties": {
+                        "name": {
+                            "type": "text",
+                            "analyzer": "standard_analyzer"
+                        },
+                        "address": {
+                            "type": "text",
+                            "analyzer": "standard_analyzer"
+                        },
+                        "city": {
+                            "type": "text",
+                            "analyzer": "standard_analyzer"
+                        },
+                        "region": {
+                            "type": "text",
+                            "analyzer": "standard_analyzer"
+                        },
+                        "postal_code": {
+                            "type": "keyword"
+                        },
+                        "country": {
+                            "type": "text",
+                            "analyzer": "standard_analyzer"
+                        }
                     }
-                }
-            },
-            "customer": {
-                "properties": {
-                    "name": {
-                        "type": "text",
-                        "analyzer": "standard_analyzer"
-                    },
-                    "contact": {
-                        "type": "text",
-                        "analyzer": "standard_analyzer"
-                    },
-                    "city": {
-                        "type": "text",
-                        "analyzer": "standard_analyzer"
-                    },
-                    "region": {
-                        "type": "text",
-                        "analyzer": "standard_analyzer"
-                    },
-                    "postal_code": {
-                        "type": "keyword"
-                    },
-                    "country": {
-                        "type": "text",
-                        "analyzer": "standard_analyzer"
-                    },
-                    "phone": {
-                        "type": "text",
-                        "analyzer": "standard_analyzer"
+                },
+                "customer": {
+                    "properties": {
+                        "name": {
+                            "type": "text",
+                            "analyzer": "standard_analyzer"
+                        },
+                        "contact": {
+                            "type": "text",
+                            "analyzer": "standard_analyzer"
+                        },
+                        "city": {
+                            "type": "text",
+                            "analyzer": "standard_analyzer"
+                        },
+                        "region": {
+                            "type": "text",
+                            "analyzer": "standard_analyzer"
+                        },
+                        "postal_code": {
+                            "type": "keyword"
+                        },
+                        "country": {
+                            "type": "text",
+                            "analyzer": "standard_analyzer"
+                        },
+                        "phone": {
+                            "type": "text",
+                            "analyzer": "standard_analyzer"
+                        }
                     }
                 }
             }
         }
     }
-}
-```
+    ```
 
+Partie 3 : Transformation et indexation des données
+3.1 Écrire les requêtes SQL pour extraire les données avec leurs relations
+ - Requête pour récupérer les produits avec leurs catégories et fournisseurs
+    ```sql
+    SELECT p.product_id, p.product_name, c.category_name, s.company_name, s.contact_name, s.city, s.address, s.region, s.postal_code, s.country, s.phone
+    FROM products p
+    JOIN categories c ON p.category_id = c.category_id
+    JOIN suppliers s ON p.supplier_id = s.supplier_id;
+    ```
+ - Requête pour récupérer les commandes avec leurs clients et expéditeurs
+    ```sql
+    SELECT o.order_id, o.ship_name, o.ship_address, o.ship_city, o.ship_region, o.ship_postal_code, o.ship_country, s.company_name AS shipper_name, s.phone AS shipper_phone, c.company_name AS customer_name, c.contact_name AS customer_contact, c.city AS customer_city, c.region AS customer_region, c.postal_code AS customer_postal_code, c.country AS customer_country, c.phone AS customer_phone
+    FROM orders o
+    JOIN shippers s ON o.ship_via = s.shipper_id
+    JOIN customers c ON o.customer_id = c.customer_id;
+    ```
