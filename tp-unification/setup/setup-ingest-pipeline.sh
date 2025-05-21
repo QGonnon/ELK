@@ -79,7 +79,7 @@ curl -X PUT "http://elasticsearch:9200/_index_template/unified-logstemplate" -H 
             "unified_log.timestamp": { "type": "date" },
             "unified_log.processed_at": { "type": "date" },
             "unified_log.enriched": { "type": "boolean" },
-            "unified_log.enriched_at": { "type": "date" },
+            "unified_log.enriched_at": { "type": "date" }
         }
     }
  }
