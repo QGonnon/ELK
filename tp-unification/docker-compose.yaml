@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  apache:
+    image: httpd:latest
+    container_name: apache_server
+    ports:
+      - "8080:80"
+    volumes:
+      - ./apache_logs:/usr/local/apache2/logs
+    networks:
+      - web_network
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx_server
+    ports:
+      - "8081:80"
+    volumes:
+      - ./nginx_logs:/var/log/nginx
+    networks:
+      - web_network
+
+  custom_web:
+    build:
+      context: ./web_server
+    container_name: web_server
+    ports:
+      - "8082:80"
+    networks:
+      - web_network
+
+networks:
+  web_network:
+    driver: bridge
