@@ -39,12 +39,13 @@ processors:
 output.elasticsearch:
   hosts: ["elasticsearch:9200"]
   index: "metricbeat-%{[agent.version]}-%{+yyyy.MM.dd}"
-  setup.template.name: "metricbeat"
-  setup.template.pattern: "metricbeat-*"
-  setup.template.settings:
-    index.number_of_shards: 1
-    index.number_of_replicas: 0
-    index.codec: best_compression
+  
+setup.template.name: "metricbeat"
+setup.template.pattern: "metricbeat-*"
+setup.template.settings:
+  index.number_of_shards: 1
+  index.number_of_replicas: 0
+  index.codec: best_compression
     
 setup.kibana:
   host: "kibana:5601"

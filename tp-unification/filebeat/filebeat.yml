@@ -32,9 +32,9 @@ processors:
 - add_cloud_metadata: ~
 - add_docker_metadata: ~
 - add_fields:
-  target: unified_log
-  fields:
-    version: 1.0.0
+    target: unified_log
+    fields:
+      version: 1.0.0
 
 output.logstash:
  hosts: ["logstash:5044"]
