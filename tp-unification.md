@@ -40,6 +40,8 @@ Mise en place
 - Vérifier l'état via (docker-compose ps)
 - Vérification de l'accès à Kibana sur un navigateur via http://localhost:5601
 
-### N°1 a N°6 : SCREENSHOT
+### N°1 a N°6 : ![Partie 7](asset\part7.png)
 
 ## Partie 8
+
+### N°1 ![Partie 8-1](asset\part8-1.png)
