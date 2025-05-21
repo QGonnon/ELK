@@ -39,8 +39,7 @@ generate_apache_log() {
  local referer=${REFERERS[$RANDOM % ${#REFERERS[@]}]}
  local user_agent=${USER_AGENTS[$RANDOM % ${#USER_AGENTS[@]}]}
 
- echo "$ip $user $auth [$timestamp] \"$method $url $version\" $status
-$size \"$referer\" \"$user_agent\""
+ echo "$ip $user $auth [$timestamp] \"$method $url $version\" $status $size \"$referer\" \"$user_agent\""
 }
 # Main loop to generate logs
 echo "Starting Apache log generator..."

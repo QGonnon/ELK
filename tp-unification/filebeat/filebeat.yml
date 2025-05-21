@@ -9,6 +9,8 @@ filebeat.inputs:
   tags: ["custom-web", "json"]
   fields:
     source_type: custom_web
+    service:
+      type: web
   fields_under_root: true
 
 filebeat.modules:

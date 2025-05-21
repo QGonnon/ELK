@@ -22,7 +22,7 @@ generate_json_log() {
  local user_agent=${USER_AGENTS[$((RANDOM % ${#USER_AGENTS[@]}))]}
  local latency=$((RANDOM % 500 + 10))
 
- echo "{\"timestamp\": \"$timestamp\", \"client_ip\": \"$ip\", \"request\": \"$method $url $version\", \"status\": $status, \"bytes\": $size, \"referer\": \"$referer\", \"user_agent\": \"$user_agent\", \"server\": \"custom-web\", \"latency_ms\": $latency}"
+ echo "{\"timestamp\": \"$timestamp\", \"client_ip\": \"$ip\", \"request\": \"$method $url $version\", \"status\": $status, \"bytes\": $size, \"referer\": \"$referer\", \"user_agent\": \"$user_agent\", \"server\": \"web\", \"latency_ms\": $latency}"
 }
 # Main loop to generate logs
 echo "Starting Custom Web log generator..."
