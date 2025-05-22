@@ -45,3 +45,9 @@ Mise en place
 ## Partie 8
 
 ### N°1 ![Partie 8-1](asset\part8-1.png)
+
+### Créer un dashboard pour les logs unifiés ![Partie 8-2-v1-5](asset\part8-2.png)
+
+### Créer un dashboard pour les métriques ![Partie 8-3-v1-3](asset\part8-3.png)
+
+## Partie 9
